@@ -14,6 +14,7 @@ const App = () => {
    
   const [selected, setSelected] = useState(0)
   const [votes, setVotes] = useState([0,0,0,0,0,0,0,0])
+  const [mostVotes, setMostVotes] = useState(0)
 
   const randomNumber = () => {
     return (
@@ -21,19 +22,39 @@ const App = () => {
     )
   }
 
+  const findMostVotes = (param) => {
+    let numVotes = 0
+    let mostVotesIndex = 0
+    let currentIndex = 0
+    param.forEach((vote) => {
+      if (vote > numVotes) {
+        numVotes = vote
+        mostVotesIndex = currentIndex
+      }
+      currentIndex += 1
+    })
+    console.log("current most votes: ", mostVotesIndex, " votes: ", param[mostVotesIndex])
+    setMostVotes(mostVotesIndex)
+  }
+
   const vote = (index) => {
     console.log(index)
     const tempVotes = [...votes]
     tempVotes[index] += 1
     setVotes(tempVotes)
+    findMostVotes(tempVotes)
   }
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <div>has {votes[selected]} votes</div>
       <button onClick={() => vote(selected)}>vote</button>
       <button onClick={() => setSelected(randomNumber)}>next anecdote</button>
+      <h1>Anecdote with most votes</h1>
+      <div>{anecdotes[mostVotes]}</div>
+      <div>has {votes[mostVotes]} votes</div>
     </>
   )
 }
