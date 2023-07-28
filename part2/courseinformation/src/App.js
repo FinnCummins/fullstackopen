@@ -19,22 +19,21 @@ const Course = (props) => {
   console.log("Hey", props.course.name)
   console.log(props.course.parts)
 
-  const addNums = () => {
-    let total = 0
-
-    props.course.parts.forEach(num => {
-      total += num.exercises
-    })
-
+  const addNums = (parts) => {
+    let initialValue = 0
+    let total = parts.reduce(
+      (accumulator, currentValue) => accumulator + currentValue.exercises,
+          initialValue
+      )
+    
     return total
-    console.log("total: ", total)
   }
 
   return (
     <>
       <Header course={props.course.name} />
       <Content parts={props.course.parts} />
-      <Total sum={addNums()} />
+      <Total sum={addNums(props.course.parts)} />
     </>
   )
 }
