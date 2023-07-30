@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import nameServices from './services/names'
 import axios from 'axios'
 
 const Filter = (props) => {
@@ -73,10 +74,10 @@ const App = () => {
         show: true
       }
 
-      axios
-        .post("http://localhost:3001/persons", nameObject)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      nameServices
+        .create(nameObject)
+        .then(returnedName => {
+          setPersons(persons.concat(returnedName))
         })
     
       setNewName('')
@@ -103,7 +104,7 @@ const App = () => {
       let objectName = person.name.toLowerCase()
       let filterName = event.target.value.toLowerCase()
       if (objectName.includes(filterName)) {
-        person.show = true
+          person.show = true
       }
       else {
         person.show = false
@@ -112,11 +113,11 @@ const App = () => {
   }
 
   useEffect(() => {
-    axios
-      .get("http://localhost:3001/persons")
-      .then(response => {
-        console.log(response.data)
-        let newData = response.data
+    nameServices
+      .getAll()
+      .then(returnedNames => {
+        console.log(returnedNames)
+        let newData = returnedNames
         newData.forEach(obj => {
           obj.show = true
         })
