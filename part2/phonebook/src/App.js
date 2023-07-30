@@ -28,12 +28,14 @@ const PersonForm = (props) => {
 }
 
 const Person = (props) => {
+  console.log("Hey ", props.name)
   return (
-    <div>{props.name} {props.number}</div>
+    <div>{props.name} {props.number} <button onClick={() => props.handleDelete(props)}>delete</button></div>
   )
 }
 
 const PersonList = (props) => {
+  console.log("in person list:")
   return (
     <div>
       {
@@ -41,7 +43,7 @@ const PersonList = (props) => {
           person => {
             if (person.show) {
               return (
-                <Person key={person.name} name={person.name} number={person.number}/>
+                <Person key={person.name} name={person.name} number={person.number} id={person.id} handleDelete={props.handleDelete}/>
               )
             }
           }
@@ -112,6 +114,17 @@ const App = () => {
     })
   }
 
+  const handleDelete = (props) => {
+    console.log("here's the props:", props.id)
+    if (window.confirm(`Are you sure you want to delete ${props.name} from the phonebook?`)) {
+      nameServices
+        .deletePerson(props.id)
+        .then(response => {
+          setPersons(persons.map(person => person.id !== props.id ? person : {}))
+        })
+    }
+  }
+
   useEffect(() => {
     nameServices
       .getAll()
@@ -138,7 +151,7 @@ const App = () => {
 
       <h2>Numbers</h2>
       
-      <PersonList persons={persons} />
+      <PersonList persons={persons} handleDelete={handleDelete}/>
     </div>
   )
 }

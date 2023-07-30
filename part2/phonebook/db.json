@@ -3,44 +3,22 @@
     {
       "name": "Arto Hellas",
       "number": "040-123456",
-      "id": 1,
-      "show": false
+      "id": 1
     },
     {
       "name": "Ada Lovelace",
       "number": "39-44-5323523",
-      "id": 2,
-      "show": false
+      "id": 2
     },
     {
       "name": "Dan Abramov",
       "number": "12-43-234345",
-      "id": 3,
-      "show": false
+      "id": 3
     },
     {
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
-      "id": 4,
-      "show": false
-    },
-    {
-      "name": "Finn Cummins",
-      "number": "089 210 6850",
-      "show": false,
-      "id": 5
-    },
-    {
-      "name": "Oisin Cummins",
-      "number": "087",
-      "show": false,
-      "id": 6
-    },
-    {
-      "name": "Derbhla Cummins",
-      "number": "089",
-      "show": false,
-      "id": 7
+      "id": 4
     }
   ]
 }
