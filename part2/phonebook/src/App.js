@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import nameServices from './services/names'
-import axios from 'axios'
+import './index.css'
+
 
 const Filter = (props) => {
   return (
@@ -53,10 +54,24 @@ const PersonList = (props) => {
   )
 }
 
+const Notification = (props) => {
+  if (props.message === null) {
+    return null
+  }
+
+  return (
+    <div className={props.messageType}>
+      {props.message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [messageType, setMessageType] = useState(null)
   const [filter, setFilter] = useState('')
 
   const checkIfNameExists = () => persons.some(person => person.name === newName)
@@ -72,6 +87,12 @@ const App = () => {
         nameServices
           .update(person.id, changedPerson)
           .then(returnedPerson => {
+            setNotificationMessage(`The user '${returnedPerson.name}' has changed their phone number to '${returnedPerson.number}'`)
+            setMessageType('success')
+            setTimeout(() => {
+              setNotificationMessage(null)
+              setMessageType(null)
+            }, 5000)
             setPersons(persons.map(currentPerson => currentPerson.name !== newName ? currentPerson : returnedPerson))
           })
       }
@@ -88,6 +109,12 @@ const App = () => {
       nameServices
         .create(nameObject)
         .then(returnedName => {
+          setNotificationMessage(`The user '${nameObject.name}' has been added to the phonebook`)
+          setMessageType('success')
+          setTimeout(() => {
+            setNotificationMessage(null)
+            setMessageType(null)
+          }, 5000)
           setPersons(persons.concat(returnedName))
         })
     
@@ -150,6 +177,8 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={notificationMessage} messageType={messageType} />
       
       <Filter handleFilter={handleFilter}/>
 
