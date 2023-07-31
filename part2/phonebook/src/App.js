@@ -80,7 +80,6 @@ const App = () => {
     event.preventDefault()
 
     if (checkIfNameExists()) {
-
       if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
         const person = persons.find(person => person.name === newName)
         const changedPerson = {...person, number : newNumber}
@@ -95,6 +94,17 @@ const App = () => {
             }, 5000)
             setPersons(persons.map(currentPerson => currentPerson.name !== newName ? currentPerson : returnedPerson))
           })
+          .catch(error => {
+              setNotificationMessage(
+                `Information for the user '${newName}' has already been removed from the server`
+              )
+              setMessageType('error')
+              setTimeout(() => {
+                setNotificationMessage(null)
+              }, 5000)
+              setPersons(persons.filter(currentPerson => currentPerson.id !== person.id))
+            }
+          )
       }
       setNewName('')
       setNewNumber('')
