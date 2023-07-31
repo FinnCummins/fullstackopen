@@ -1,7 +1,32 @@
 import nameServices from './services/countries'
 import {useState, useEffect} from 'react'
 
+const CountryDisplay = (props) => {
+  const country = props.countries[0]
+  return (
+    <div>
+      <h1>{country.name.common}</h1>
+      <div>capital {country.capital[0]}</div>
+      <div>area {country.area}</div>
+      <h3>languages:</h3>
+      <ul>
+        {
+          Object.values(country.languages).map(language => <li key={language}>{language}</li>)
+        }
+      </ul>
+      <img src={country.flags.png}></img>
+    </div>
+  )
+}
+
 const Display = (props) => {
+  const [current, setCurrent] = useState('a')
+
+  const handleShow = (country) => {
+    props.setNewCountry(country)
+    props.filter(country)
+  }
+
   if (props.countries.length > 10) {
     return (
       <div>
@@ -13,26 +38,16 @@ const Display = (props) => {
     return (
       <div>
         {
-          props.countries.map(country => <div key={country.name.common}>{country.name.common}</div>)
+          props.countries.map(
+            country => <div key={country.name.common}>{country.name.common} <button onClick={() => handleShow(country.name.common)}>show</button></div>
+          )
         }
       </div>
     )
   }
   else if (props.countries.length === 1) {
-    const country = props.countries[0]
     return (
-      <div>
-        <h1>{country.name.common}</h1>
-        <div>capital {country.capital[0]}</div>
-        <div>area {country.area}</div>
-        <h3>languages:</h3>
-        <ul>
-          {
-            Object.values(country.languages).map(language => <li key={language}>{language}</li>)
-          }
-        </ul>
-        <img src={country.flags.png}></img>
-      </div>
+      <CountryDisplay countries={props.countries} />
     )
   }
 }
@@ -68,9 +83,9 @@ const App = () => {
         find countries <input 
                         value={newCountry}
                         onChange={handleCountryChange}
-                        autocomplete="no"/>
+                        autoComplete="no"/>
       </div>
-      <Display countries={filterList}/>
+      <Display countries={filterList} setNewCountry={setNewCountry} filter={filter}/>
     </>
   )
 }
