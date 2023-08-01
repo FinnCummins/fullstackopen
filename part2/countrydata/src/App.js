@@ -3,6 +3,26 @@ import {useState, useEffect} from 'react'
 
 const CountryDisplay = (props) => {
   const country = props.countries[0]
+  const [cityCoords, setCityCoords] = useState([0,0])
+  const [weatherData, setWeatherData] = useState({main: {temp: 17}, wind: {speed: 2}})
+
+  useEffect(() => {
+    nameServices
+      .getCityCoords(country.capital[0])
+      .then(response => {
+          nameServices
+            .getWeather(response.lon, response.lat)
+            .then(response => {
+              setWeatherData(response)
+            })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }, [weatherData])
+
+  console.log(`Weather in ${country.name.common} `, weatherData)
+
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -15,6 +35,10 @@ const CountryDisplay = (props) => {
         }
       </ul>
       <img src={country.flags.png}></img>
+      <h2>Weather in {country.capital[0]}</h2>
+      <div>temperature {weatherData.main.temp} Celcius</div>
+      <img src={` https://openweathermap.org/img/wn/10d@2x.png`}></img>
+      <div>wind {weatherData.wind.speed} m/s</div>
     </div>
   )
 }
