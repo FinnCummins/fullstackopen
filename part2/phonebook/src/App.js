@@ -29,14 +29,12 @@ const PersonForm = (props) => {
 }
 
 const Person = (props) => {
-  console.log("Hey ", props.name)
   return (
     <div>{props.name} {props.number} <button onClick={() => props.handleDelete(props)}>delete</button></div>
   )
 }
 
 const PersonList = (props) => {
-  console.log("in person list:")
   return (
     <div>
       {
@@ -68,6 +66,7 @@ const Notification = (props) => {
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
+  const [currentPersons, setCurrentPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
@@ -88,6 +87,7 @@ const App = () => {
           .then(returnedPerson => {
             setNotificationMessage(`The user '${returnedPerson.name}' has changed their phone number to '${returnedPerson.number}'`)
             setMessageType('success')
+            setCurrentPersons(persons.concat(changedPerson))
             setTimeout(() => {
               setNotificationMessage(null)
               setMessageType(null)
@@ -112,8 +112,7 @@ const App = () => {
     else {
       const nameObject = {
         name: newName,
-        number: newNumber,
-        show: true
+        number: newNumber
       }
 
       nameServices
@@ -121,11 +120,20 @@ const App = () => {
         .then(returnedName => {
           setNotificationMessage(`The user '${nameObject.name}' has been added to the phonebook`)
           setMessageType('success')
+          setCurrentPersons(persons.concat(returnedName))
           setTimeout(() => {
             setNotificationMessage(null)
             setMessageType(null)
           }, 5000)
-          setPersons(persons.concat(returnedName))
+        })
+        .catch(error => {
+          setNotificationMessage(
+            error.response.data.error
+          )
+          setMessageType('error')
+          setTimeout(() => {
+            setNotificationMessage(null)
+          }, 5000)
         })
     
       setNewName('')
@@ -161,7 +169,6 @@ const App = () => {
   }
 
   const handleDelete = (props) => {
-    console.log("here's the props:", props.id)
     if (window.confirm(`Are you sure you want to delete ${props.name} from the phonebook?`)) {
       nameServices
         .deletePerson(props.id)
@@ -175,14 +182,13 @@ const App = () => {
     nameServices
       .getAll()
       .then(returnedNames => {
-        console.log(returnedNames)
         let newData = returnedNames
         newData.forEach(obj => {
           obj.show = true
         })
         setPersons(newData)
       })
-  }, [])
+  }, [currentPersons])
 
   return (
     <div>
